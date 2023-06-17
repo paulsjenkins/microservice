@@ -42,8 +42,7 @@ func NewServer(dsn string, l *logrus.Logger) (srv *Server, err error) {
 	}
 
 	srv.buildRoutes()
-	l.Info("server initialised: ok")
-
+	l.Info("server initialised")
 	return srv, nil
 }
 
@@ -61,7 +60,6 @@ func (srv *Server) buildRoutes() {
 
 // Listen is a method on Server that starts the Fiber server
 func (srv *Server) Listen(addr string) error {
-	srv.log.Info(fmt.Sprintf("server is running at %s", addr))
 	if err := srv.app.Listen(addr); err != nil {
 		srv.log.Error(fmt.Sprintf("error at server.Listen: '%srv'", err.Error()))
 		return err

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/joho/godotenv"
+	"log"
 	"microservice"
 	"microservice/keys"
 	"os"
@@ -13,7 +14,7 @@ import (
 func main() {
 
 	if err := run(); err != nil {
-		os.Exit(1)
+		log.Fatalf("error: %s", err.Error())
 	}
 	os.Exit(0)
 }
@@ -28,8 +29,8 @@ func run() (err error) {
 		return
 	}
 
-	log := logrus.New()
-	log.SetLevel(logLevel)
+	logger := logrus.New()
+	logger.SetLevel(logLevel)
 
 	var dsn string
 	if dsn, err = buildDSN(); err != nil {
@@ -37,8 +38,8 @@ func run() (err error) {
 	}
 
 	var srv *microservice.Server
-	if srv, err = microservice.NewServer(dsn, log); err != nil {
-		return err
+	if srv, err = microservice.NewServer(dsn, logger); err != nil {
+		return
 	}
 
 	listenAddress := os.Getenv(keys.ListenAddress)
