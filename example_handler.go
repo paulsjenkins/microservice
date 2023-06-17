@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// example
+// GetHandlerExample is an example handler
 // {get} http://example.com/shoes?order=desc&brand=nike
 func (srv *Server) GetHandlerExample() fiber.Handler {
 

@@ -54,7 +54,6 @@ func buildSchema(db *gorm.DB) (err error) {
 }
 
 func (srv *Server) buildRoutes() {
-	// see also: example_handler.go
 	srv.app.Get("/shoes", srv.GetHandlerExample())
 }
 
