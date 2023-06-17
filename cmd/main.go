@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"psj/microservice"
-	"psj/microservice/keys"
-
 	"github.com/joho/godotenv"
+	"microservice"
+	"microservice/keys"
+	"os"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -20,9 +20,7 @@ func main() {
 
 func run() (err error) {
 
-	if err = godotenv.Load(); err != nil {
-		return
-	}
+	_ = godotenv.Load()
 
 	logLevelString := os.Getenv(keys.LogLevel)
 	var logLevel logrus.Level

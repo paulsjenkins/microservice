@@ -7,7 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"psj/microservice/models"
+	"microservice/models"
 )
 
 type Server struct {

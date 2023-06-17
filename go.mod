@@ -1,4 +1,4 @@
-module psj/microservice
+module microservice
 
 go 1.18
 
