@@ -7,7 +7,9 @@ import (
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"microservice/middleware/jwtAuth"
 	"microservice/models"
+	"strings"
 )
 
 type Server struct {
@@ -16,16 +18,16 @@ type Server struct {
 	db  *gorm.DB
 }
 
-func NewServer(dsn string, l *logrus.Logger) (srv *Server, err error) {
+func NewServer(dsn string, logger *logrus.Logger) (srv *Server, err error) {
 
 	var db *gorm.DB
 	if db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{}); err != nil {
-		l.Error(err)
+		logger.Error(err)
 		return nil, err
 	}
 
 	if err = buildSchema(db); err != nil {
-		l.Error(err)
+		logger.Error(err)
 		return nil, err
 	}
 
@@ -35,14 +37,27 @@ func NewServer(dsn string, l *logrus.Logger) (srv *Server, err error) {
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
+	// middleware configuration
+	// any route that is not 'public' should be protected
+	// refer to documentation in the middleware folder
+	const publicPath = "/public/"
+
+	app.Use(jwtAuth.New(jwtAuth.Config{
+		Filter: func(c *fiber.Ctx) bool {
+			path := strings.ToLower(c.Path())
+			isPublic := strings.Contains(path, publicPath)
+			return isPublic
+		},
+	}, logger))
+
 	srv = &Server{
 		app: app,
-		log: l,
+		log: logger,
 		db:  db,
 	}
 
 	srv.buildRoutes()
-	l.Info("server initialised")
+	logger.Info("server initialised")
 	return srv, nil
 }
 
@@ -54,7 +69,11 @@ func buildSchema(db *gorm.DB) (err error) {
 }
 
 func (srv *Server) buildRoutes() {
+
 	srv.app.Get("/shoes", srv.GetHandlerExample())
+	srv.app.Get("/public/shoes", srv.GetHandlerExample())
+	srv.app.Get("/public/token", srv.GenerateToken())
+	srv.app.Get("/protected", srv.ProtectedRoute())
 }
 
 // Listen is a method on Server that starts the Fiber server
