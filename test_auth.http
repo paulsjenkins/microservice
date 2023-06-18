@@ -1,0 +1,13 @@
+// this should be accessible
+GET http://192.168.86.39:8082/public/token
+Accept: application/json
+
+###
+// this should not be accessible
+GET http://192.168.86.39:8082/shoes
+Accept: application/json
+
+###
+// this should be accessible
+GET http://192.168.86.39:8082/public/shoes
+Accept: application/json
